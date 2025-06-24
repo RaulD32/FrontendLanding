@@ -7,6 +7,7 @@ export default function ContactForm() {
     telefono: '',
     mensaje: '',
   });
+  const [aceptaAviso, setAceptaAviso] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
 
@@ -24,6 +25,10 @@ export default function ContactForm() {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.correo)) {
       setError('Correo inválido.');
+      return;
+    }
+    if (!aceptaAviso) {
+      setError('Debes aceptar el aviso de privacidad.');
       return;
     }
 
@@ -45,6 +50,7 @@ export default function ContactForm() {
 
       setStatus('success');
       setFormData({ nombre: '', correo: '', telefono: '', mensaje: '' });
+      setAceptaAviso(false);
     } catch (err: any) {
       console.error(err);
       setError('Error enviando el mensaje. Intenta más tarde.');
@@ -104,6 +110,23 @@ export default function ContactForm() {
             placeholder="Escribe tu mensaje..."
             required
           />
+        </div>
+
+        <div className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            id="aviso"
+            checked={aceptaAviso}
+            onChange={() => setAceptaAviso(!aceptaAviso)}
+            className="mt-1"
+          />
+          <label htmlFor="aviso" className="text-sm text-gray-700">
+            Acepto el{' '}
+            <a href="/aviso-de-privacidad" target="_blank" className="text-pink-600 underline">
+              aviso de privacidad
+            </a>
+            .
+          </label>
         </div>
 
         <button
